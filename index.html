@@ -756,6 +756,18 @@ tr:hover td{background:rgba(108,99,255,.03);}
   </div>
 </div>
 
+<!-- Modal de confirmação genérico -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal" style="max-width:380px;">
+    <h3>Confirmar ação</h3>
+    <p id="confirm-msg" style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:4px;"></p>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="fecharModal('modal-confirm')">Cancelar</button>
+      <button class="btn btn-danger" id="btn-confirm-ok">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <!-- SYNC STATUS -->
 <div id="sync-status"></div>
 
@@ -1269,15 +1281,20 @@ function editarAporte(id, pessoa, mes, valor) {
   document.getElementById('modal-aporte').classList.add('open');
 }
 
-async function excluirAporte(id, pessoa, mes) {
-  if (!confirm(`Excluir aporte de ${pessoa} em ${mes}? Esta ação não pode ser desfeita.`)) return;
-  syncShow('Excluindo...', 'sync');
-  try {
-    await sbFetch(`aportes?id=eq.${id}`, 'DELETE');
-    syncShow('Aporte excluído.', 'ok');
-    await carregarAportes();
-    carregarOverview();
-  } catch(e) { syncShow('Erro ao excluir', 'err'); }
+function excluirAporte(id, pessoa, mes) {
+  // Usa modal próprio — confirm() é bloqueado em alguns ambientes
+  document.getElementById('confirm-msg').textContent = `Excluir aporte de ${pessoa} em ${mes}? Esta ação não pode ser desfeita.`;
+  document.getElementById('modal-confirm').classList.add('open');
+  document.getElementById('btn-confirm-ok').onclick = async () => {
+    fecharModal('modal-confirm');
+    syncShow('Excluindo...', 'sync');
+    try {
+      await sbFetch(`aportes?id=eq.${id}`, 'DELETE');
+      syncShow('Aporte excluído.', 'ok');
+      await carregarAportes();
+      carregarOverview();
+    } catch(e) { syncShow('Erro ao excluir: ' + e.message, 'err'); }
+  };
 }
 
 function abrirModalComp() {
