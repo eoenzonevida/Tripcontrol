@@ -24,9 +24,12 @@ button.btn{background:var(--accent);color:#fff;border:none;padding:10px 20px;bor
 button.btn:hover{opacity:.85;}
 button.btn-success{background:var(--success);}
 button.btn-danger{background:var(--danger);}
+button.btn-warning{background:var(--warning);color:#111;}
 button.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2);}
 button.btn-sm{padding:5px 12px;font-size:11px;}
 button.btn-full{width:100%;padding:12px;font-size:14px;margin-top:8px;}
+button.btn-icon{background:transparent;border:none;cursor:pointer;width:24px;height:24px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;padding:0;transition:background .15s;}
+button.btn-icon:hover{background:rgba(255,255,255,.08);}
 /* APP */
 #app{display:none;}
 .header{background:linear-gradient(135deg,#1a1d2e,#16213e);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
@@ -42,6 +45,11 @@ button.btn-full{width:100%;padding:12px;font-size:14px;margin-top:8px;}
 .badge-red{background:rgba(239,68,68,.15);color:var(--danger);}
 .badge-gray{background:rgba(148,163,184,.1);color:var(--text2);}
 .badge-teal{background:rgba(0,212,170,.12);color:var(--accent2);}
+/* COMP BADGE — inline pequeno */
+.cbadge{display:inline-block;padding:1px 5px;border-radius:4px;font-size:9px;font-weight:700;margin-left:5px;line-height:1.5;vertical-align:middle;}
+.cbadge-ok{background:rgba(16,185,129,.2);color:#6ee7b7;border:1px solid rgba(16,185,129,.3);}
+.cbadge-pend{background:rgba(245,158,11,.2);color:#fcd34d;border:1px solid rgba(245,158,11,.3);}
+.cbadge-sem{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3);}
 .tabs{display:flex;gap:2px;padding:12px 24px 0;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;}
 .tab{padding:8px 16px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text2);border:none;background:transparent;white-space:nowrap;}
 .tab.active{background:var(--bg);color:var(--text);border:1px solid var(--border);border-bottom:1px solid var(--bg);}
@@ -122,12 +130,27 @@ tr:hover td{background:rgba(108,99,255,.03);}
 /* SYNC INDICATOR */
 #sync-status{position:fixed;bottom:16px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:11px;display:flex;align-items:center;gap:6px;z-index:999;transition:opacity .4s;opacity:0;}
 #sync-status.show{opacity:1;}
-/* HIGHLIGHT */
-.highlight-box{background:linear-gradient(135deg,rgba(108,99,255,.1),rgba(0,212,170,.05));border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:14px;}
 /* BUDGET */
 .budget-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid rgba(45,53,97,.35);}
 .budget-item:last-child{border-bottom:none;}
 .budget-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+/* ROTEIRO */
+.roteiro-table td{font-size:11px;vertical-align:top;padding:10px 11px;}
+.roteiro-table .dia-num{font-weight:700;color:var(--accent2);font-size:13px;white-space:nowrap;}
+.roteiro-table .dia-local{font-weight:600;font-size:12px;}
+.roteiro-table .dia-obs{font-size:10px;color:var(--text2);margin-top:3px;line-height:1.5;}
+.roteiro-table .dia-custo{font-weight:700;color:var(--accent2);white-space:nowrap;}
+/* FONTE CARD */
+.fonte-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;}
+.fonte-card-title{font-size:12px;font-weight:700;}
+.fonte-card-sub{font-size:10px;color:var(--text2);line-height:1.5;}
+.fonte-card-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.fonte-card-links a{font-size:10px;color:var(--accent);text-decoration:none;padding:3px 8px;border:1px solid rgba(108,99,255,.25);border-radius:20px;transition:background .15s;}
+.fonte-card-links a:hover{background:rgba(108,99,255,.12);}
+.fonte-card-price{font-size:12px;font-weight:700;color:var(--accent2);}
+.fonte-card-alert{font-size:10px;color:var(--danger);font-weight:600;margin-top:2px;}
+/* CAMBIO BOX */
+.cambio-box{background:linear-gradient(135deg,rgba(0,212,170,.07),rgba(108,99,255,.05));border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:16px;}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
@@ -141,49 +164,40 @@ tr:hover td{background:rgba(108,99,255,.03);}
 </head>
 <body>
 
-<!-- ================================================ -->
-<!-- SETUP SCREEN — aparece só na primeira vez         -->
-<!-- ================================================ -->
+<!-- SETUP SCREEN -->
 <div id="setup-screen">
   <div class="setup-card">
     <div style="font-size:28px;margin-bottom:12px;">✈️</div>
     <h1>TripControl — Peru 2026</h1>
     <p>Para ativar a plataforma colaborativa, cole abaixo as credenciais do Supabase. Elas ficam salvas no seu navegador — você só faz isso uma vez.</p>
-
     <div class="setup-step">
       <div class="setup-step-num">PASSO 1 — Criar projeto no Supabase</div>
       <p>Acesse <strong>supabase.com</strong> → New Project → anote a URL e a Anon Key (em Settings → API).</p>
     </div>
     <div class="setup-step">
       <div class="setup-step-num">PASSO 2 — Criar tabelas</div>
-      <p>No Supabase, vá em <strong>SQL Editor</strong> e execute o arquivo <strong>seed.sql</strong> que está na pasta do projeto. Isso cria as tabelas e já insere os dados históricos.</p>
+      <p>No Supabase, vá em <strong>SQL Editor</strong> e execute o arquivo <strong>seed.sql</strong> que está na pasta do projeto.</p>
     </div>
     <div class="setup-step">
       <div class="setup-step-num">PASSO 3 — Cole as credenciais abaixo</div>
       <p>Depois de executar o SQL, cole aqui a URL e a chave pública.</p>
     </div>
-
     <label class="inp-label">Supabase URL</label>
     <input type="text" id="cfg-url" placeholder="https://xxxxxxxxxxxx.supabase.co" />
-
     <label class="inp-label">Supabase Anon Key</label>
     <input type="text" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
-
     <label class="inp-label">Seu nome (para identificar quem registrou)</label>
     <select id="cfg-nome">
       <option value="">Selecione</option>
       <option>Arthur</option><option>Caio</option><option>Enzo</option>
       <option>Jhonatan</option><option>Rodrigo</option><option>Pedro</option>
     </select>
-
     <button class="btn btn-full" onclick="salvarConfig()">Entrar na Plataforma →</button>
     <p id="cfg-error" style="color:var(--danger);font-size:11px;margin-top:10px;display:none;"></p>
   </div>
 </div>
 
-<!-- ================================================ -->
-<!-- APP PRINCIPAL                                     -->
-<!-- ================================================ -->
+<!-- APP PRINCIPAL -->
 <div id="app">
 
 <div class="header">
@@ -219,7 +233,7 @@ tr:hover td{background:rgba(108,99,255,.03);}
     <span>🚨</span>
     <div><strong>Jhonatan: R$0 em 7 meses.</strong> R$2.000 de deficit. Decisão mais urgente do projeto.</div>
   </div>
-  <div class="grid4 mb-20" id="kpi-row">
+  <div class="grid4 mb-20">
     <div class="kpi teal"><div class="kpi-label">Total no Caixa</div><div class="kpi-value" id="kpi-caixa">—</div><div class="kpi-sub" id="kpi-caixa-sub">carregando</div></div>
     <div class="kpi red"><div class="kpi-label">Dívidas Acumuladas</div><div class="kpi-value" id="kpi-dividas">R$3.840</div><div class="kpi-sub">Arthur R$300 · Enzo R$600 · Pedro R$940 · Jhonatan R$2.000</div></div>
     <div class="kpi yellow"><div class="kpi-label">Meses Restantes</div><div class="kpi-value">~8</div><div class="kpi-sub">Meta: nov–dez/2026 ou jan/2027</div></div>
@@ -249,7 +263,7 @@ tr:hover td{background:rgba(108,99,255,.03);}
   </div>
   <div class="alert alert-info mb-16">
     <span>ℹ️</span>
-    <div>Dados em tempo real do banco. Clique em <strong>+ Registrar Aporte</strong> para adicionar abr/26 em diante. Dados históricos (set/25–mar/26) já carregados.</div>
+    <div>Dados em tempo real. ✏️ edita o registro · 🗑️ exclui (só abr/26+). Badges de comprovante: <span class="cbadge cbadge-ok">✓ comp.</span> confirmado · <span class="cbadge cbadge-pend">⏳ pend.</span> pendente · <span class="cbadge cbadge-sem">sem comp.</span> sem comprovante (abr/26+).</div>
   </div>
   <div class="card mb-20" style="overflow-x:auto;">
     <div id="tabela-aportes-container">
@@ -293,18 +307,24 @@ tr:hover td{background:rgba(108,99,255,.03);}
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;" class="mb-16">
     <div class="section-title" style="margin-bottom:0;">Extratos Mensais (Inter)</div>
-    <button class="btn btn-sm" onclick="abrirModalExtrato()" id="btn-extrato">+ Postar Extrato</button>
+    <button class="btn btn-sm" onclick="abrirModalExtrato()">+ Postar Extrato</button>
+  </div>
+  <div class="alert alert-info mb-16" style="margin-top:-8px;">
+    <span>ℹ️</span>
+    <div>Qualquer membro pode clicar em <strong>Confirmar</strong> para validar o extrato postado. Badges: <span class="badge badge-green" style="font-size:9px;">Confirmado</span> = extrato validado · <span class="badge badge-yellow" style="font-size:9px;">Pendente</span> = aguarda validação.</div>
   </div>
   <div class="card" style="overflow-x:auto;" id="tabela-extrato-container">
     <div style="text-align:center;padding:30px;color:var(--text2);"><span class="loader"></span>Carregando...</div>
   </div>
 </div>
 
-<!-- ===== ORÇAMENTO ===== -->
+<!-- ===== ORÇAMENTO PERU ===== -->
 <div id="page-orcamento" class="page content">
+
+  <!-- SEÇÃO 1: Cards de faixas de preço -->
   <div class="alert alert-success mb-16">
     <span>📊</span>
-    <div>Dados reais de viajantes 2025/2026. Câmbio: USD 1 = R$6,00. <strong>Janela ideal: out–nov/2026.</strong></div>
+    <div>Dados reais de viajantes 2025/2026. Câmbio referência: USD 1 = R$6,00. <strong>Janela ideal: out–nov/2026.</strong></div>
   </div>
   <div class="section-title mb-16">Estimativa por Pessoa — 10 dias (Lima + Cusco + Machu Picchu)</div>
   <div class="grid3 mb-20">
@@ -344,7 +364,8 @@ tr:hover td{background:rgba(108,99,255,.03);}
       <div class="budget-item"><div class="budget-dot" style="background:#10b981;"></div><div style="flex:1;font-size:12px;">Seguro + reserva</div><strong style="font-size:12px;">R$400</strong></div>
     </div>
   </div>
-  <div style="background:linear-gradient(135deg,rgba(108,99,255,.08),rgba(0,212,170,.05));border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:14px 18px;" class="mb-20">
+
+  <div style="background:linear-gradient(135deg,rgba(108,99,255,.08),rgba(0,212,170,.05));border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:14px 18px;" class="mb-24">
     <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:10px;">TOTAL PARA O GRUPO (6 pessoas)</div>
     <div class="grid3">
       <div><div style="font-size:10px;color:var(--text2);">Econômico</div><div style="font-size:20px;font-weight:700;color:var(--accent2);">R$25.200</div></div>
@@ -352,28 +373,253 @@ tr:hover td{background:rgba(108,99,255,.03);}
       <div><div style="font-size:10px;color:var(--text2);">Confortável</div><div style="font-size:20px;font-weight:700;color:var(--warning);">R$57.000</div></div>
     </div>
   </div>
-  <div class="grid2">
+
+  <!-- SEÇÃO 2: Roteiro dia a dia -->
+  <div class="section-title mb-16">Roteiro Dia a Dia — 10 dias</div>
+  <div class="card mb-24" style="overflow-x:auto;">
+    <table class="roteiro-table">
+      <thead>
+        <tr>
+          <th style="width:60px;">Dia</th>
+          <th style="width:130px;">Destino</th>
+          <th>Atividade Principal</th>
+          <th style="width:120px;">Custo Est./pessoa</th>
+          <th>Observação Importante</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:rgba(0,212,170,.03);">
+          <td class="dia-num">1–2</td>
+          <td><div class="dia-local">🏙️ Lima</div></td>
+          <td>
+            <strong>Chegada + Miraflores + Barranco</strong>
+            <div class="dia-obs">Chegada ao Aeroporto Jorge Chávez (LIM). Check-in hostel em Miraflores (bairro seguro). Passeio pelo Parque Kennedy, bairro de Barranco, Larcomar. Gastronomia: ceviche no Mercado de Surquillo, tour gastronômico pelo bairro.</div>
+          </td>
+          <td class="dia-custo">~R$180–280/dia<br><span style="font-size:9px;color:var(--text2);">hostal + comida + transp.</span></td>
+          <td>
+            <div style="font-size:11px;">Uber funciona bem em Lima. Não pegar táxi da rua. Câmbio de dólares em casas de câmbio de Miraflores (taxa muito melhor que aeroporto).</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="dia-num">3</td>
+          <td><div class="dia-local">✈️ Lima → Cusco</div></td>
+          <td>
+            <strong>Voo doméstico + Aclimatação em Cusco</strong>
+            <div class="dia-obs">Voo cedo (recomendado manhã). Chegada ao aeroporto Alejandro Velasco Astete (CUZ). Check-in. TARDE INTEIRAMENTE DE DESCANSO. Caminhada leve pela Plaza de Armas. Chá de coca folha (ajuda altitude).</div>
+          </td>
+          <td class="dia-custo">~R$800–1.200<br><span style="font-size:9px;color:var(--text2);">voo LIM→CUZ one way</span></td>
+          <td>
+            <div style="font-size:11px;color:var(--danger);font-weight:600;">⚠️ ALTITUDE 3.400m! Aclimatação obrigatória. Nada de esforço físico no dia 3. Dor de cabeça, cansaço e falta de ar são normais. Tomar remédio Acetazolamida (Diamox) sob orientação médica.</div>
+          </td>
+        </tr>
+        <tr style="background:rgba(0,212,170,.03);">
+          <td class="dia-num">4</td>
+          <td><div class="dia-local">🏛️ Cusco</div></td>
+          <td>
+            <strong>City Tour Cusco</strong>
+            <div class="dia-obs">Plaza de Armas, Catedral do Cusco, Qorikancha (Templo do Sol), fortaleza de Sacsayhuamán, Qenco, Puka Pukara e Tambomachay. Tour completo dura ~5–6h. Almoço no mercado central de San Pedro.</div>
+          </td>
+          <td class="dia-custo">~R$150–250<br><span style="font-size:9px;color:var(--text2);">guia + entradas + comida</span></td>
+          <td>
+            <div style="font-size:11px;">Boleto Turístico (~S/.130 = ~R$200) inclui vários sítios arqueológicos. Comprar antes. Boa caminhada — altitude ainda pesa, ir no ritmo.</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="dia-num">5</td>
+          <td><div class="dia-local">🏔️ Valle Sagrado</div></td>
+          <td>
+            <strong>Pisac · Ollantaytambo · Chinchero</strong>
+            <div class="dia-obs">Tour dia inteiro pelo Valle Sagrado dos Incas. Mercado artesanal de Pisac (manhã cedo!). Ruínas de Ollantaytambo (impressionante — dormir aqui antes do trem). Chinchero: tecelagem andina e ruínas.</div>
+          </td>
+          <td class="dia-custo">~R$100–180<br><span style="font-size:9px;color:var(--text2);">tour operadora + entradas</span></td>
+          <td>
+            <div style="font-size:11px;">Tour com operadora local sai ~$17–30/pessoa. Alternativa: van coletiva (~$8). Ficar em Ollantaytambo à noite é recomendado — pega o trem cedo no dia seguinte.</div>
+          </td>
+        </tr>
+        <tr style="background:rgba(0,212,170,.03);">
+          <td class="dia-num">6</td>
+          <td><div class="dia-local">🚂 Ollantaytambo → Aguas Calientes</div></td>
+          <td>
+            <strong>Trem para Aguas Calientes (Pueblo Machu Picchu)</strong>
+            <div class="dia-obs">Embarque cedo. Paisagem espetacular ao longo do Rio Urubamba. Chegada em Aguas Calientes (~2h). Check-in no hostel/hotel. Tarde livre: banhos termais (~S/.20), cerveja, restaurantes. Confirmar ônibus para MP às 5h do dia seguinte.</div>
+          </td>
+          <td class="dia-custo">~R$210–300<br><span style="font-size:9px;color:var(--text2);">trem Voyager one way ~$35–50</span></td>
+          <td>
+            <div style="font-size:11px;"><strong>Inca Rail</strong> (incarail.com) ou <strong>Peru Rail</strong> (perurail.com). Reservar com 2–3 meses de antecedência para grupos. Classe Voyager cobre bem, Vistadome tem janela panorâmica (+custo).</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="dia-num">7</td>
+          <td><div class="dia-local">🏯 Machu Picchu</div></td>
+          <td>
+            <strong>Machu Picchu — Dia principal</strong>
+            <div class="dia-obs">Ônibus às 5h30 da manhã (~30min subida). Entrada ao nascer do sol. Circuito 1 (vista clássica + terraços) ou Circuito 2 (Cidade Inca completa, ~3h). Guia local recomendado. Tarde: retorno a Aguas Calientes ou dormir mais uma noite.</div>
+          </td>
+          <td class="dia-custo">~R$560–700<br><span style="font-size:9px;color:var(--text2);">ingresso ~$50 + bus RT ~$24 + guia ~$20</span></td>
+          <td>
+            <div style="font-size:11px;color:var(--danger);font-weight:600;">⚠️ Comprar ingresso com 3–4 meses de antecedência em machupicchu.gob.pe — esgota! Para out/nov/26: comprar em jun/jul/26. Levar passaporte. Proibido: drones, tripé, comida dentro.</div>
+          </td>
+        </tr>
+        <tr style="background:rgba(0,212,170,.03);">
+          <td class="dia-num">8</td>
+          <td><div class="dia-local">🚂 → Cusco</div></td>
+          <td>
+            <strong>Volta Aguas Calientes → Cusco + Tarde Livre</strong>
+            <div class="dia-obs">Trem de volta (Voyager ~$35–50). Chegar em Ollantaytambo ou Cusco. Tarde livre em Cusco: compras no mercado de San Pedro, San Blas (bairro de artesãos), jantar de despedida com Pisco Sour. Comprar lembranças.</div>
+          </td>
+          <td class="dia-custo">~R$210–300<br><span style="font-size:9px;color:var(--text2);">trem volta + jantar + compras</span></td>
+          <td>
+            <div style="font-size:11px;">Boa oportunidade de comprar artesanato andino, alpaca, chicha. Barganhar no mercado é cultural e esperado. Jantar em restaurante peruano na Plaza de Armas.</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="dia-num">9</td>
+          <td><div class="dia-local">✈️ Cusco → Lima</div></td>
+          <td>
+            <strong>Voo de volta + Último dia Lima</strong>
+            <div class="dia-obs">Voo Cusco → Lima (manhã recomendada). Tarde em Lima: Larco Museum (museu pré-colombiano espetacular), jantar de despedida em Miraflores (Astrid y Gastón area). Noite de Lima.</div>
+          </td>
+          <td class="dia-custo">~R$800–1.200<br><span style="font-size:9px;color:var(--text2);">voo + museu + jantar</span></td>
+          <td>
+            <div style="font-size:11px;">Check-in no hotel perto do aeroporto (voo de madrugada geralmente). Manter reais/dólares em espécie para emergências. Guardar notas fiscais de compras (aeroporto pode pedir).</div>
+          </td>
+        </tr>
+        <tr style="background:rgba(0,212,170,.03);">
+          <td class="dia-num">10</td>
+          <td><div class="dia-local">✈️ Lima → Brasil</div></td>
+          <td>
+            <strong>Retorno ao Brasil (GRU / GIG / BSB)</strong>
+            <div class="dia-obs">Voo Lima → São Paulo (LATAM, Gol, Copa). Chegada geralmente de tarde/noite. Voo de madrugada da maioria das companhias garante chegada pela manhã no Brasil.</div>
+          </td>
+          <td class="dia-custo">—</td>
+          <td>
+            <div style="font-size:11px;">Recomendado chegar ao aeroporto 3h antes do voo internacional. Verificar franquia de bagagem (LATAM cobra excesso). Declaração alfandegária para compras acima de USD 500.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SEÇÃO 3: Onde comprar cada coisa -->
+  <div class="section-title mb-16">Onde Comprar — Fontes Reais e Links Diretos</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;" class="mb-24">
+
+    <div class="fonte-card">
+      <div class="fonte-card-title">✈️ Passagem Internacional GRU ↔ LIM</div>
+      <div class="fonte-card-price">R$1.800–2.800 em out/nov/26</div>
+      <div class="fonte-card-sub">LATAM, Gol, Copa e Avianca operam a rota. Menor tarifa: comprar com 4–6 meses de antecedência (mai/jun/26). Voar terça/quarta = mais barato.</div>
+      <div class="fonte-card-alert">⚡ Comprar agora ou em mai/26 no máximo!</div>
+      <div class="fonte-card-links">
+        <a href="https://www.google.com/flights" target="_blank">Google Flights</a>
+        <a href="https://www.decolar.com" target="_blank">Decolar</a>
+        <a href="https://www.latamairlines.com" target="_blank">LATAM</a>
+        <a href="https://www.voegol.com.br" target="_blank">Gol</a>
+      </div>
+    </div>
+
+    <div class="fonte-card">
+      <div class="fonte-card-title">🛫 Voo Doméstico Lima ↔ Cusco</div>
+      <div class="fonte-card-price">$40–80 one way (~R$240–480)</div>
+      <div class="fonte-card-sub">LATAM Peru e Sky Airline são as principais. Voo dura ~1h20. Recomendado pegar voo cedo (manhã) para o dia da chegada em Cusco — tardes têm turbulência nos Andes.</div>
+      <div class="fonte-card-links">
+        <a href="https://www.latamairlines.com" target="_blank">LATAM Peru</a>
+        <a href="https://www.skyairline.com" target="_blank">Sky Airline</a>
+        <a href="https://www.google.com/flights" target="_blank">Google Flights</a>
+      </div>
+    </div>
+
+    <div class="fonte-card" style="border-color:rgba(239,68,68,.3);">
+      <div class="fonte-card-title">🏯 Ingresso Machu Picchu</div>
+      <div class="fonte-card-price">~$50/pessoa (~R$300) — Circuito 1 ou 2</div>
+      <div class="fonte-card-sub">Site oficial do governo peruano. Número limitado por dia. Circuito 1: vista clássica + entrada superior. Circuito 2: cidade completa (~3h). Horários: 6h, 7h, 8h, 9h, 10h, 11h.</div>
+      <div class="fonte-card-alert">🚨 COMPRAR COM 3–4 MESES DE ANTECEDÊNCIA — ESGOTA RÁPIDO!</div>
+      <div class="fonte-card-links">
+        <a href="https://www.machupicchu.gob.pe" target="_blank">machupicchu.gob.pe ⭐ Oficial</a>
+      </div>
+    </div>
+
+    <div class="fonte-card">
+      <div class="fonte-card-title">🚂 Trem para Aguas Calientes</div>
+      <div class="fonte-card-price">Voyager ~$35–50 OW · Vistadome ~$60–80 OW</div>
+      <div class="fonte-card-sub">Inca Rail e Peru Rail são as únicas operadoras autorizadas. Partida de Ollantaytambo (recomendado) ou Cusco (mais longo). Duração ~2h. Reservar com 2–3 meses para grupos de 6.</div>
+      <div class="fonte-card-links">
+        <a href="https://www.incarail.com" target="_blank">Inca Rail</a>
+        <a href="https://www.perurail.com" target="_blank">Peru Rail</a>
+      </div>
+    </div>
+
+    <div class="fonte-card">
+      <div class="fonte-card-title">🛏️ Hospedagem</div>
+      <div class="fonte-card-price">Dorm ~$15–25/noite · Privativo ~$40–60</div>
+      <div class="fonte-card-sub"><strong>Cusco:</strong> Pariwana Hostel, Loki Hostel, Wild Rover — ótima localização e social. <strong>Lima:</strong> Hostel Lima em Miraflores. <strong>Aguas Calientes:</strong> reservar com antecedência (village pequena).</div>
+      <div class="fonte-card-links">
+        <a href="https://www.booking.com" target="_blank">Booking.com</a>
+        <a href="https://www.hostelworld.com" target="_blank">Hostelworld</a>
+        <a href="https://www.airbnb.com.br" target="_blank">Airbnb</a>
+      </div>
+    </div>
+
+    <div class="fonte-card">
+      <div class="fonte-card-title">🧭 Passeios e Tours</div>
+      <div class="fonte-card-price">Valle Sagrado ~$17–30 · City Tour ~$20</div>
+      <div class="fonte-card-sub">Civitatis e GetYourGuide têm tours em português e em grupo. Operadoras locais em Cusco são ainda mais baratas — perguntar na recepção do hostel. Machu Picchu: guia local ~$20–30 pela cidadela.</div>
+      <div class="fonte-card-links">
+        <a href="https://www.civitatis.com/br/cusco/" target="_blank">Civitatis</a>
+        <a href="https://www.getyourguide.com" target="_blank">GetYourGuide</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEÇÃO 4: Alertas críticos de prazo -->
+  <div class="section-title mb-16">Alertas Críticos de Prazo</div>
+  <div class="grid2 mb-24">
     <div class="card">
       <div class="card-title" style="color:var(--success);">✅ Melhores épocas (2026)</div>
-      <div class="rule-item"><div class="rule-num" style="background:var(--success);">★</div><div class="rule-text"><strong>Out–Nov/2026</strong> — Seco, menos turismo, preços normais. <strong>Melhor escolha para o grupo.</strong></div></div>
+      <div class="rule-item"><div class="rule-num" style="background:var(--success);">★</div><div class="rule-text"><strong>Out–Nov/2026</strong> — Temporada seca, menos turistas, preços normais. <strong>Melhor escolha para o grupo.</strong></div></div>
       <div class="rule-item"><div class="rule-num" style="background:var(--warning);">!</div><div class="rule-text"><strong>Ago–Set/2026</strong> — Ótima alternativa. Comprar passagens em mai/26.</div></div>
-      <div class="rule-item"><div class="rule-num" style="background:var(--danger);">✗</div><div class="rule-text"><strong>Jun–Jul/2026</strong> — Alta temporada. +30–50% de custo. Ingressos esgotados.</div></div>
-      <div class="rule-item"><div class="rule-num" style="background:var(--danger);">✗</div><div class="rule-text"><strong>Jan–Mar/2027</strong> — Chuvas em Cusco. Trilhas fechadas. Evitar.</div></div>
+      <div class="rule-item"><div class="rule-num" style="background:var(--danger);">✗</div><div class="rule-text"><strong>Jun–Jul/2026</strong> — Alta temporada. +30–50% de custo. Ingressos MP esgotados com meses de antecedência.</div></div>
+      <div class="rule-item"><div class="rule-num" style="background:var(--danger);">✗</div><div class="rule-text"><strong>Jan–Mar/2027</strong> — Chuvas em Cusco. Trilhas fechadas. Risco de cancelamento do MP. Evitar.</div></div>
     </div>
     <div class="card">
-      <div class="card-title">⚡ Alertas de Prazo</div>
-      <div class="rule-item"><div class="rule-num" style="background:var(--danger);">!</div><div class="rule-text"><strong>Ingressos Machu Picchu:</strong> Comprar com 3–5 meses de antecedência. Para out/nov: comprar em jun/jul/26.</div></div>
-      <div class="rule-item"><div class="rule-num" style="background:var(--danger);">!</div><div class="rule-text"><strong>Passagem GRU→LIM:</strong> Melhor preço 4–6 meses antes. Para out/26: comprar agora (mai/26).</div></div>
-      <div class="rule-item"><div class="rule-num" style="background:var(--warning);">!</div><div class="rule-text"><strong>Trem (Peru Rail):</strong> Reservar com 2–3 meses para grupos de 6.</div></div>
-      <div class="rule-item"><div class="rule-num" style="background:var(--accent);">i</div><div class="rule-text"><strong>Passaportes:</strong> Verificar validade agora. Peru não exige visto para brasileiros.</div></div>
+      <div class="card-title">⚡ Agenda de Compras</div>
+      <div class="rule-item"><div class="rule-num" style="background:var(--danger);">!</div><div class="rule-text"><strong>Agora (abr/26):</strong> Pesquisar passagens GRU→LIM e monitorar preço no Google Flights. Passaporte com validade mínima 6 meses após a viagem.</div></div>
+      <div class="rule-item"><div class="rule-num" style="background:var(--danger);">!</div><div class="rule-text"><strong>Mai/Jun/26:</strong> Comprar passagens internacionais GRU↔LIM. Melhor janela de preço.</div></div>
+      <div class="rule-item"><div class="rule-num" style="background:var(--warning);">!</div><div class="rule-text"><strong>Jun/Jul/26:</strong> Comprar ingressos Machu Picchu (machupicchu.gob.pe). Reservar trem Inca Rail / Peru Rail.</div></div>
+      <div class="rule-item"><div class="rule-num" style="background:var(--warning);">!</div><div class="rule-text"><strong>Jul/Ago/26:</strong> Reservar hospedagem Cusco e Aguas Calientes. Confirmar voos domésticos LIM↔CUZ.</div></div>
+      <div class="rule-item"><div class="rule-num" style="background:var(--accent);">i</div><div class="rule-text"><strong>Set/Out/26:</strong> Converter dinheiro em dólares. Verificar vacinas (não obrigatória, mas Febre Amarela é recomendada).</div></div>
     </div>
   </div>
+
+  <!-- SEÇÃO 5: Dica de câmbio -->
+  <div class="section-title mb-16">Dicas de Câmbio e Pagamento</div>
+  <div class="cambio-box mb-20">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:6px;">💵 LEVAR DÓLARES EM ESPÉCIE</div>
+        <div style="font-size:12px;line-height:1.6;color:var(--text2);">A melhor taxa no Peru é em casas de câmbio de Miraflores (Lima) e Centro Histórico de Cusco. Taxa bem superior ao cartão e ao aeroporto. Converter de BRL para USD no Brasil antes (B3/câmbio autorizado) ou em Miraflores ao chegar.</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--warning);margin-bottom:6px;">🏧 ATENÇÃO AOS ATMs</div>
+        <div style="font-size:12px;line-height:1.6;color:var(--text2);">ATMs no Peru cobram taxa de saque de S/.12–15 (~R$18–23) por operação, além da taxa do seu banco no Brasil. Use com moderação. BCP e Scotiabank têm ATMs mais confiáveis. Sempre verificar câmbio oferecido antes de confirmar (diz "decline conversion" para usar a taxa do seu banco).</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:6px;">💳 CARTÃO INTERNACIONAL</div>
+        <div style="font-size:12px;line-height:1.6;color:var(--text2);">Visa e Mastercard aceitos na maioria dos hotéis, restaurantes e lojas maiores. Para mercados locais e táxis: só Sol peruano (PEN). Notise seu banco antes da viagem (bloquear por segurança). Wise e Nomad são ótimas opções — câmbio na cotação do momento sem spread absurdo.</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:6px;">📊 REFERÊNCIA DE CÂMBIO</div>
+        <div style="font-size:12px;line-height:1.6;color:var(--text2);">USD 1 ≈ S/3,70–3,80 (sol peruano) em 2026. R$6,00 ≈ USD 1 (câmbio referência). Para out/26: estimar câmbio conservador de R$6,20–6,50/USD. Um almoço popular em Cusco: S/15–25 (~R$25–40). Cerveja local: S/8–12 (~R$13–20).</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ===== PROJEÇÃO ===== -->
 <div id="page-projecao" class="page content">
   <div class="section-title mb-16">Projeção de Caixa — a partir de Abr/2026</div>
-  <div class="grid3 mb-16" id="kpi-projecao">
+  <div class="grid3 mb-16">
     <div class="kpi red"><div class="kpi-label">Cenário atual (R$300/pessoa)</div><div class="kpi-value" id="proj-300">—</div><div class="kpi-sub">em nov/2026</div></div>
     <div class="kpi yellow"><div class="kpi-label">Cenário R$400/pessoa</div><div class="kpi-value" id="proj-400">—</div><div class="kpi-sub">em nov/2026</div></div>
     <div class="kpi green"><div class="kpi-label">Cenário R$500/pessoa</div><div class="kpi-value" id="proj-500">—</div><div class="kpi-sub">em nov/2026</div></div>
@@ -383,7 +629,7 @@ tr:hover td{background:rgba(108,99,255,.03);}
   </div>
   <div class="alert alert-danger mb-16">
     <span>🚨</span>
-    <div><strong>Realidade:</strong> Com R$300/pessoa, chegam em nov/2026 com ~R$21k — cobre orçamento econômico por pessoa mas não mid-range. <strong>R$500/pessoa + quitar dívidas</strong> é o único caminho para o roteiro completo.</div>
+    <div><strong>Realidade:</strong> Com R$300/pessoa, chegam em nov/2026 com ~R$21k — cobre orçamento econômico mas não mid-range. <strong>R$500/pessoa + quitar dívidas</strong> é o único caminho para o roteiro completo.</div>
   </div>
 </div>
 
@@ -437,10 +683,6 @@ tr:hover td{background:rgba(108,99,255,.03);}
       <div class="rule-item"><div class="rule-num">5</div><div class="rule-text"><strong>Saques</strong> somente para pagamentos aprovados (passagem, ingresso, hospedagem).</div></div>
     </div>
   </div>
-  <div class="highlight-box">
-    <div style="font-size:13px;font-weight:700;margin-bottom:8px;">Script para abordar o Arthur</div>
-    <div style="font-size:12px;color:var(--text2);line-height:1.8;"><em>"Arthur, montei uma plataforma de controle pro grupo ter visibilidade coletiva. Não é desconfiança — é o mínimo que qualquer caixa coletivo precisa ter. Preciso que você poste o extrato do Inter desde set/25 com a posição atual dos investimentos na aba 'Extrato Arthur'. A partir daí todo mês vai automático por lá."</em><div class="divider"></div><strong style="color:var(--text);">Se ele resistir:</strong> Recusa a prestar contas de dinheiro do grupo não é opinião — é problema de gestão. Nesse caso o grupo discute migrar a conta para conta conjunta entre 2 titulares.</div>
-  </div>
 </div>
 
 </div><!-- /app -->
@@ -448,12 +690,19 @@ tr:hover td{background:rgba(108,99,255,.03);}
 <!-- MODAIS -->
 <div class="modal-overlay" id="modal-aporte">
   <div class="modal">
-    <h3>Registrar Aporte</h3>
+    <h3 id="modal-aporte-titulo">Registrar Aporte</h3>
+    <input type="hidden" id="m-aporte-id" value="" />
     <div class="input-group"><label class="inp-label">Pessoa</label>
-      <select id="m-pessoa-aporte"><option value="Arthur">Arthur</option><option value="Caio">Caio</option><option value="Enzo">Enzo</option><option value="Jhonatan">Jhonatan</option><option value="Rodrigo">Rodrigo</option><option value="Pedro">Pedro</option></select>
+      <select id="m-pessoa-aporte">
+        <option value="Arthur">Arthur</option><option value="Caio">Caio</option><option value="Enzo">Enzo</option>
+        <option value="Jhonatan">Jhonatan</option><option value="Rodrigo">Rodrigo</option><option value="Pedro">Pedro</option>
+      </select>
     </div>
     <div class="input-group"><label class="inp-label">Mês/Ano</label>
-      <select id="m-mes-aporte"><option>abr/26</option><option>mai/26</option><option>jun/26</option><option>jul/26</option><option>ago/26</option><option>set/26</option><option>out/26</option><option>nov/26</option><option>dez/26</option></select>
+      <select id="m-mes-aporte">
+        <option>abr/26</option><option>mai/26</option><option>jun/26</option><option>jul/26</option>
+        <option>ago/26</option><option>set/26</option><option>out/26</option><option>nov/26</option><option>dez/26</option>
+      </select>
     </div>
     <div class="input-group"><label class="inp-label">Valor (R$)</label><input type="number" id="m-valor-aporte" placeholder="300" /></div>
     <div class="modal-footer">
@@ -467,10 +716,16 @@ tr:hover td{background:rgba(108,99,255,.03);}
   <div class="modal">
     <h3>Adicionar Comprovante</h3>
     <div class="input-group"><label class="inp-label">Pessoa</label>
-      <select id="m-pessoa-comp"><option value="Arthur">Arthur</option><option value="Caio">Caio</option><option value="Enzo">Enzo</option><option value="Jhonatan">Jhonatan</option><option value="Rodrigo">Rodrigo</option><option value="Pedro">Pedro</option></select>
+      <select id="m-pessoa-comp">
+        <option value="Arthur">Arthur</option><option value="Caio">Caio</option><option value="Enzo">Enzo</option>
+        <option value="Jhonatan">Jhonatan</option><option value="Rodrigo">Rodrigo</option><option value="Pedro">Pedro</option>
+      </select>
     </div>
     <div class="input-group"><label class="inp-label">Mês/Ano</label>
-      <select id="m-mes-comp"><option>abr/26</option><option>mai/26</option><option>jun/26</option><option>jul/26</option><option>ago/26</option><option>set/26</option><option>out/26</option><option>nov/26</option><option>dez/26</option></select>
+      <select id="m-mes-comp">
+        <option>abr/26</option><option>mai/26</option><option>jun/26</option><option>jul/26</option>
+        <option>ago/26</option><option>set/26</option><option>out/26</option><option>nov/26</option><option>dez/26</option>
+      </select>
     </div>
     <div class="input-group"><label class="inp-label">Valor (R$)</label><input type="number" id="m-valor-comp" placeholder="300" /></div>
     <div class="input-group"><label class="inp-label">Link ou descrição do comprovante</label><input type="text" id="m-link-comp" placeholder="Link Drive, print WhatsApp..." /></div>
@@ -485,7 +740,10 @@ tr:hover td{background:rgba(108,99,255,.03);}
   <div class="modal">
     <h3>Postar Extrato Mensal</h3>
     <div class="input-group"><label class="inp-label">Mês/Ano</label>
-      <select id="m-mes-extrato"><option>abr/26</option><option>mai/26</option><option>jun/26</option><option>jul/26</option><option>ago/26</option><option>set/26</option><option>out/26</option><option>nov/26</option><option>dez/26</option></select>
+      <select id="m-mes-extrato">
+        <option>abr/26</option><option>mai/26</option><option>jun/26</option><option>jul/26</option>
+        <option>ago/26</option><option>set/26</option><option>out/26</option><option>nov/26</option><option>dez/26</option>
+      </select>
     </div>
     <div class="input-group"><label class="inp-label">Saldo real na conta (R$)</label><input type="number" id="m-saldo-extrato" placeholder="8160" /></div>
     <div class="input-group"><label class="inp-label">Rendimentos do mês (R$)</label><input type="number" id="m-rendimentos-extrato" placeholder="85" /></div>
@@ -550,30 +808,39 @@ function logout() {
 }
 
 // ---- SUPABASE FETCH WRAPPER ----
-async function sbFetch(table, method, body, filter) {
-  let url = `${SUPA_URL}/rest/v1/${table}`;
-  if (filter) url += `?${filter}`;
-  const opts = {
-    method: method || 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`,
-      'Prefer': method === 'POST' ? 'return=representation' : ''
-    }
+async function sbFetch(resource, method, body, filterOverride) {
+  // resource pode ser 'tabela' ou 'tabela?filtro=...'
+  // filterOverride é passado separado quando não está no resource
+  let url = `${SUPA_URL}/rest/v1/${resource}`;
+  if (filterOverride) url += (url.includes('?') ? '&' : '?') + filterOverride;
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'apikey': SUPA_KEY,
+    'Authorization': `Bearer ${SUPA_KEY}`
   };
+
+  if (method === 'POST') headers['Prefer'] = 'return=representation';
+  if (method === 'PATCH') headers['Prefer'] = 'return=representation';
+  if (method === 'DELETE') headers['Prefer'] = 'return=minimal';
+
+  const opts = { method: method || 'GET', headers };
   if (body) opts.body = JSON.stringify(body);
+
   const res = await fetch(url, opts);
   if (!res.ok) {
     const txt = await res.text();
     throw new Error(`${res.status}: ${txt}`);
   }
-  return res.status === 204 ? null : res.json();
+  if (res.status === 204 || method === 'DELETE') return null;
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }
 
 function syncShow(msg, type) {
   const el = document.getElementById('sync-status');
-  el.innerHTML = `<span style="color:${type==='ok'?'var(--success)':type==='err'?'var(--danger)':'var(--accent)'}">●</span> ${msg}`;
+  const cor = type === 'ok' ? 'var(--success)' : type === 'err' ? 'var(--danger)' : 'var(--accent)';
+  el.innerHTML = `<span style="color:${cor}">●</span> ${msg}`;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 3000);
 }
@@ -591,46 +858,52 @@ function iniciarApp(url, key, user) {
 
 async function carregarTudo() {
   await Promise.all([
-    carregarOverview(),
     carregarAportes(),
     carregarComprovantes(),
     carregarExtratos()
   ]);
-  renderProjecao(8160);
+  carregarOverview();
+  renderProjecao(calcCaixaTotal() || 8160);
 }
 
-// ---- APORTES ----
+// ---- DADOS GLOBAIS ----
 let dadosAportes = {};
+let dadosAportesRaw = []; // com ids
+let dadosComprovantes = [];
 
+// ---- APORTES ----
 async function carregarAportes() {
   try {
     const rows = await sbFetch('aportes', 'GET', null, 'order=mes.asc');
+    dadosAportesRaw = rows || [];
     dadosAportes = {};
     rows.forEach(r => {
       if (!dadosAportes[r.pessoa]) dadosAportes[r.pessoa] = {};
       dadosAportes[r.pessoa][r.mes] = r.valor;
     });
     renderAportes();
-    carregarOverview();
   } catch(e) {
     console.error(e);
     syncShow('Erro ao carregar aportes', 'err');
   }
 }
 
+function getAporteId(pessoa, mes) {
+  const row = dadosAportesRaw.find(r => r.pessoa === pessoa && r.mes === mes);
+  return row ? row.id : null;
+}
+
 function calcTotal(pessoa) {
   return Object.values(dadosAportes[pessoa] || {}).reduce((a,b)=>a+b,0);
 }
 
-function calcObrigacao(pessoa) {
-  let ob = 0;
-  MESES_HISTORICO.forEach(m => { ob += (META_MES[m]||300); });
-  return ob;
+function calcObrigacao() {
+  return MESES_HISTORICO.reduce((s,m) => s + (META_MES[m]||300), 0);
 }
 
 function calcDivida(pessoa) {
   const contrib = calcTotal(pessoa);
-  const ob = calcObrigacao(pessoa);
+  const ob = calcObrigacao();
   return Math.max(0, ob - contrib);
 }
 
@@ -642,19 +915,26 @@ function calcCaixaTotal() {
   return PESSOAS.reduce((s,p) => s + calcTotal(p), 0);
 }
 
+// índice comprovante: "pessoa|mes" -> status ou null
+function buildCompIndex() {
+  const idx = {};
+  dadosComprovantes.forEach(c => {
+    const key = `${c.pessoa}|${c.mes}`;
+    // se tiver confirmado, prioriza sobre pendente
+    if (!idx[key] || idx[key] !== 'Confirmado') {
+      idx[key] = c.status;
+    }
+  });
+  return idx;
+}
+
 function renderAportes() {
   const container = document.getElementById('tabela-aportes-container');
-  // Coletar todos os meses (histórico + extras)
+  const compIdx = buildCompIndex();
+
   const todosMeses = new Set(MESES_HISTORICO);
   PESSOAS.forEach(p => Object.keys(dadosAportes[p]||{}).forEach(m => todosMeses.add(m)));
-  const mesesOrdenados = Array.from(todosMeses).sort((a,b)=>{
-    const parse = s => {
-      const [m,a] = s.split('/');
-      const mi = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'].indexOf(m);
-      return parseInt(a)*12+mi;
-    };
-    return parse(a)-parse(b);
-  });
+  const mesesOrdenados = Array.from(todosMeses).sort((a,b) => parseMes(a) - parseMes(b));
 
   let acum = 0;
   const totaisPessoa = {};
@@ -663,43 +943,96 @@ function renderAportes() {
   let rows = '';
   mesesOrdenados.forEach(mes => {
     const meta = META_MES[mes] || 300;
+    const isHistorico = MESES_HISTORICO.includes(mes);
     let totalMes = 0;
     let colunas = '';
+
     PESSOAS.forEach(p => {
       const v = (dadosAportes[p]||{})[mes] ?? null;
+      const aportId = getAporteId(p, mes);
       if (v !== null) { totalMes += v; totaisPessoa[p] += v; }
+
       let cel, cls;
-      if (v === null) { cel = '<span class="contrib-future">—</span>'; }
-      else if (v === 0) { cel = '<span class="contrib-cell contrib-zero">R$0</span>'; }
-      else if (v < meta) { cel = `<span class="contrib-cell contrib-partial">R$${v}</span>`; }
-      else { cel = `<span class="contrib-cell contrib-ok">R$${v}</span>`; }
-      colunas += `<td>${cel}</td>`;
+      if (v === null) {
+        cel = '<span class="contrib-future">—</span>';
+      } else if (v === 0) {
+        cel = '<span class="contrib-cell contrib-zero">R$0</span>';
+      } else if (v < meta) {
+        cel = `<span class="contrib-cell contrib-partial">R$${v}</span>`;
+      } else {
+        cel = `<span class="contrib-cell contrib-ok">R$${v}</span>`;
+      }
+
+      // badge comprovante
+      if (v !== null && v > 0) {
+        const compKey = `${p}|${mes}`;
+        const compStatus = compIdx[compKey];
+        if (compStatus === 'Confirmado') {
+          cel += `<span class="cbadge cbadge-ok">✓ comp.</span>`;
+        } else if (compStatus === 'Pendente') {
+          cel += `<span class="cbadge cbadge-pend">⏳ pend.</span>`;
+        } else if (!isHistorico) {
+          cel += `<span class="cbadge cbadge-sem">sem comp.</span>`;
+        }
+      }
+
+      // botões de ação
+      let acoes = '';
+      if (aportId !== null) {
+        acoes += `<button class="btn-icon" title="Editar" onclick="editarAporte(${aportId},'${p}','${mes}',${v ?? 0})">✏️</button>`;
+        if (!isHistorico) {
+          acoes += `<button class="btn-icon" title="Excluir" onclick="excluirAporte(${aportId},'${p}','${mes}')">🗑️</button>`;
+        }
+      }
+
+      colunas += `<td><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">${cel}<span style="margin-left:auto;display:flex;gap:2px;">${acoes}</span></div></td>`;
     });
+
     acum += totalMes;
-    rows += `<tr><td><strong>${mes}</strong></td><td style="color:var(--text2);">R$${meta}</td>${colunas}<td style="font-weight:600;">R$${totalMes}</td><td style="color:var(--accent2);font-weight:600;">R$${acum}</td></tr>`;
+    rows += `<tr>
+      <td><strong>${mes}</strong>${isHistorico ? '' : ' <span style="font-size:9px;color:var(--accent2);">novo</span>'}</td>
+      <td style="color:var(--text2);">R$${meta}</td>
+      ${colunas}
+      <td style="font-weight:600;">R$${totalMes}</td>
+      <td style="color:var(--accent2);font-weight:600;">R$${acum}</td>
+    </tr>`;
   });
 
   let totRow = `<tr style="background:rgba(108,99,255,.06);"><td colspan="2"><strong>TOTAL</strong></td>`;
   PESSOAS.forEach(p => {
     const v = totaisPessoa[p];
-    const cls = v === 0 ? 'cell-bad' : v < calcObrigacao(p) ? 'cell-warn' : 'cell-ok';
+    const ob = calcObrigacao();
+    const cls = v === 0 ? 'cell-bad' : v < ob ? 'cell-warn' : 'cell-ok';
     totRow += `<td class="${cls}">R$${v}</td>`;
   });
   totRow += `<td>—</td><td style="color:var(--accent2);font-weight:700;">R$${acum}</td></tr>`;
 
   container.innerHTML = `<table>
-    <thead><tr><th>Mês</th><th>Meta</th>${PESSOAS.map(p=>`<th>${p}</th>`).join('')}<th>Total mês</th><th>Acumulado</th></tr></thead>
-    <tbody>${rows}</tbody><tfoot>${totRow}</tfoot>
+    <thead><tr>
+      <th>Mês</th><th>Meta</th>
+      ${PESSOAS.map(p=>`<th>${p}</th>`).join('')}
+      <th>Total mês</th><th>Acumulado</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot>${totRow}</tfoot>
   </table>`;
 
+  renderDividasEPontualidade();
+  document.getElementById('hdr-caixa').textContent = `Caixa: R$${calcCaixaTotal().toLocaleString('pt-BR')}`;
+}
+
+function renderDividasEPontualidade() {
   // Dívidas
   const divEl = document.getElementById('card-dividas');
   divEl.innerHTML = '<div class="card-title">Saldo Negativo por Pessoa</div>';
   PESSOAS.forEach(p => {
     const div = calcDivida(p);
-    const pct = div === 0 ? 100 : Math.max(5, 100 - Math.round(div/calcObrigacao(p)*100));
+    const ob = calcObrigacao();
+    const pct = div === 0 ? 100 : Math.max(5, 100 - Math.round(div/ob*100));
     const cor = div === 0 ? 'fill-green' : (div > 1000 ? 'fill-red' : 'fill-yellow');
-    const bdg = div === 0 ? `<span class="badge badge-green">Em dia ✓</span>` : `<span class="badge badge-red">deve R$${div}</span>`;
+    const bdg = div === 0
+      ? `<span class="badge badge-green">Em dia ✓</span>`
+      : `<span class="badge badge-red">deve R$${div}</span>`;
     divEl.innerHTML += `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(45,53,97,.3);">
       <span style="font-size:12px;">${p}</span>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -712,41 +1045,38 @@ function renderAportes() {
   // Pontualidade
   const pontEl = document.getElementById('card-pontualidade');
   let pRows = PESSOAS.map(p => {
-    const ok = getMesesContribuidos(p);
+    const ok  = getMesesContribuidos(p);
     const tot = MESES_HISTORICO.length;
     const pct = Math.round(ok/tot*100);
-    const bdg = pct === 100 ? '<span class="badge badge-green">100% ⭐</span>' :
-                pct === 0   ? '<span class="badge badge-red">0% 🚨</span>' :
-                pct >= 70   ? `<span class="badge badge-yellow">${pct}%</span>` :
-                              `<span class="badge badge-red">${pct}%</span>`;
+    const bdg = pct===100 ? '<span class="badge badge-green">100% ⭐</span>'
+              : pct===0   ? '<span class="badge badge-red">0% 🚨</span>'
+              : pct>=70   ? `<span class="badge badge-yellow">${pct}%</span>`
+                          : `<span class="badge badge-red">${pct}%</span>`;
     return `<tr><td>${p}</td><td class="cell-ok">${ok}</td><td class="cell-bad">${tot-ok}</td><td>${bdg}</td></tr>`;
   }).join('');
   pontEl.innerHTML = `<div class="card-title">Análise de Pontualidade</div>
     <table><thead><tr><th>Pessoa</th><th>Pagos</th><th>Faltou</th><th>Taxa</th></tr></thead><tbody>${pRows}</tbody></table>`;
-
-  // Atualizar header
-  document.getElementById('hdr-caixa').textContent = `Caixa: R$${calcCaixaTotal()}`;
 }
 
 // ---- OVERVIEW ----
-async function carregarOverview() {
+function carregarOverview() {
   if (Object.keys(dadosAportes).length === 0) return;
   const total = calcCaixaTotal();
   document.getElementById('kpi-caixa').textContent = `R$${total.toLocaleString('pt-BR')}`;
   document.getElementById('kpi-caixa-sub').textContent = `${Math.round(total/390*100)}% da meta Peru mid (R$39k)`;
 
-  // Pessoas overview
+  // Pessoas
   const el = document.getElementById('pessoas-overview');
   el.innerHTML = PESSOAS.map(p => {
     const contrib = calcTotal(p);
     const div = calcDivida(p);
     const cor = CORES[p];
-    const divBadge = div === 0 
+    const divBadge = div === 0
       ? `<span style="font-size:10px;color:var(--success);">Em dia 🟢</span>`
       : `<span style="font-size:10px;color:var(--danger);">deve R$${div}</span>`;
-    const extra = p === 'Arthur' ? '<span style="font-size:10px;color:var(--text2);"> (adm)</span>' : '';
-    const extra2 = p === 'Enzo' ? '<span style="font-size:10px;color:var(--accent);"> (você)</span>' : '';
-    const warn = p === 'Jhonatan' ? 'border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.04);' : '';
+    const extra  = p === 'Arthur' ? '<span style="font-size:10px;color:var(--text2);"> (adm)</span>' : '';
+    const extra2 = p === 'Enzo'   ? '<span style="font-size:10px;color:var(--accent);"> (você)</span>' : '';
+    const warn   = p === 'Jhonatan' ? 'border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.04);' : '';
     return `<div class="person-row" style="${warn}">
       <div class="avatar" style="background:${cor};">${p[0]}</div>
       <div class="person-info">
@@ -764,8 +1094,8 @@ async function carregarOverview() {
   const saude = document.getElementById('saude-overview');
   const pct1 = Math.min(100, Math.round(total/12000*100));
   const pct2 = Math.min(100, Math.round(total/39000*100));
-  const emDia = PESSOAS.filter(p=>calcDivida(p)===0).length;
-  const pct3 = Math.round(emDia/PESSOAS.length*100);
+  const emDia = PESSOAS.filter(p => calcDivida(p) === 0).length;
+  const pct3  = Math.round(emDia/PESSOAS.length*100);
   saude.innerHTML = `
     <div style="margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:4px;"><span>Arrecadado vs planejado</span><span>${pct1}%</span></div>
@@ -791,6 +1121,7 @@ async function carregarOverview() {
 async function carregarComprovantes() {
   try {
     const rows = await sbFetch('comprovantes', 'GET', null, 'order=created_at.desc');
+    dadosComprovantes = rows || [];
     renderComprovantes(rows);
   } catch(e) { console.error(e); }
 }
@@ -804,15 +1135,17 @@ function renderComprovantes(rows) {
   const tbody = rows.map(r => {
     const cls = r.status === 'Confirmado' ? 'badge-green' : 'badge-yellow';
     const btnConf = r.status !== 'Confirmado'
-      ? `<button class="btn btn-sm btn-success" onclick="confirmarComp(${r.id})" style="margin-left:6px;">Confirmar</button>` : '';
-    const link = r.link ? `<a href="${r.link}" target="_blank" style="color:var(--accent);font-size:11px;">ver →</a>` : '<span style="color:var(--text2);font-size:11px;">sem link</span>';
+      ? `<button class="btn btn-sm btn-success" onclick="confirmarComp(${r.id})" style="margin-left:6px;padding:3px 9px;font-size:10px;">Confirmar</button>` : '';
+    const link = r.link
+      ? `<a href="${r.link}" target="_blank" style="color:var(--accent);font-size:11px;">ver →</a>`
+      : '<span style="color:var(--text2);font-size:11px;">sem link</span>';
     return `<tr>
       <td><strong>${r.pessoa}</strong></td>
       <td>${r.mes}</td>
       <td>R$${r.valor}</td>
       <td>${link}</td>
       <td><span class="badge ${cls}">${r.status}</span>${btnConf}</td>
-      <td style="color:var(--text2);font-size:11px;">${r.adicionado_em}</td>
+      <td style="color:var(--text2);font-size:11px;">${r.adicionado_em || '—'}</td>
     </tr>`;
   }).join('');
   el.innerHTML = `<table><thead><tr><th>Pessoa</th><th>Mês</th><th>Valor</th><th>Comprovante</th><th>Status</th><th>Adicionado em</th></tr></thead><tbody>${tbody}</tbody></table>`;
@@ -820,10 +1153,11 @@ function renderComprovantes(rows) {
 
 async function confirmarComp(id) {
   try {
-    await sbFetch(`comprovantes?id=eq.${id}`, 'PATCH', {status:'Confirmado'});
+    await sbFetch(`comprovantes?id=eq.${id}`, 'PATCH', { status: 'Confirmado' });
     syncShow('Comprovante confirmado!', 'ok');
-    carregarComprovantes();
-  } catch(e) { syncShow('Erro ao confirmar','err'); }
+    await carregarComprovantes();
+    renderAportes(); // atualiza badges
+  } catch(e) { syncShow('Erro ao confirmar', 'err'); }
 }
 
 // ---- EXTRATOS ----
@@ -840,27 +1174,49 @@ function renderExtratos(rows) {
     el.innerHTML = '<p style="text-align:center;padding:24px;color:var(--text2);">Nenhum extrato postado ainda. Arthur: poste aqui até dia 5 de cada mês.</p>';
     return;
   }
-  const tbody = rows.map(r => `<tr>
-    <td><strong>${r.mes}</strong></td>
-    <td style="color:var(--accent2);font-weight:600;">R$${r.saldo_real}</td>
-    <td style="color:var(--success);">+R$${r.rendimentos}</td>
-    <td style="font-size:11px;">${r.composicao || '—'}</td>
-    <td style="font-size:11px;color:var(--text2);">${r.observacoes || '—'}</td>
-    <td style="font-size:11px;color:var(--text2);">${new Date(r.posted_at).toLocaleDateString('pt-BR')}</td>
-  </tr>`).join('');
-  el.innerHTML = `<table><thead><tr><th>Mês</th><th>Saldo Real</th><th>Rendimentos</th><th>Composição</th><th>Obs.</th><th>Postado em</th></tr></thead><tbody>${tbody}</tbody></table>`;
+  const tbody = rows.map(r => {
+    const status = r.status || 'Pendente';
+    const confirmadoPor = r.confirmado_por || '';
+    const cls = status === 'Confirmado' ? 'badge-green' : 'badge-yellow';
+    const btnConf = status !== 'Confirmado'
+      ? `<button class="btn btn-sm btn-success" onclick="confirmarExtrato(${r.id})" style="margin-left:6px;padding:3px 9px;font-size:10px;">Confirmar</button>`
+      : '';
+    const confCol = confirmadoPor
+      ? `<span style="font-size:11px;color:var(--success);">${confirmadoPor}</span>`
+      : '<span style="color:var(--text2);font-size:11px;">—</span>';
+    return `<tr>
+      <td><strong>${r.mes}</strong></td>
+      <td style="color:var(--accent2);font-weight:600;">R$${r.saldo_real}</td>
+      <td style="color:var(--success);">+R$${r.rendimentos}</td>
+      <td style="font-size:11px;">${r.composicao || '—'}</td>
+      <td style="font-size:11px;color:var(--text2);">${r.observacoes || '—'}</td>
+      <td><span class="badge ${cls}">${status}</span>${btnConf}</td>
+      <td>${confCol}</td>
+      <td style="font-size:11px;color:var(--text2);">${new Date(r.posted_at).toLocaleDateString('pt-BR')}</td>
+    </tr>`;
+  }).join('');
+  el.innerHTML = `<table><thead><tr>
+    <th>Mês</th><th>Saldo Real</th><th>Rendimentos</th>
+    <th>Composição</th><th>Obs.</th>
+    <th>Status</th><th>Confirmado por</th><th>Postado em</th>
+  </tr></thead><tbody>${tbody}</tbody></table>`;
+}
+
+async function confirmarExtrato(id) {
+  try {
+    await sbFetch(`extratos?id=eq.${id}`, 'PATCH', { status: 'Confirmado', confirmado_por: USUARIO });
+    syncShow('Extrato confirmado!', 'ok');
+    carregarExtratos();
+  } catch(e) { syncShow('Erro ao confirmar extrato', 'err'); }
 }
 
 // ---- PROJEÇÃO ----
 function renderProjecao(base) {
   const meses = ['Abr/26','Mai/26','Jun/26','Jul/26','Ago/26','Set/26','Out/26','Nov/26','Dez/26','Jan/27'];
   const mesesFuturos = 8;
-  const v300 = base + 300*6*mesesFuturos;
-  const v400 = base + 400*6*mesesFuturos;
-  const v500 = base + 500*6*mesesFuturos;
-  document.getElementById('proj-300').textContent = `R$${v300.toLocaleString('pt-BR')}`;
-  document.getElementById('proj-400').textContent = `R$${v400.toLocaleString('pt-BR')}`;
-  document.getElementById('proj-500').textContent = `R$${v500.toLocaleString('pt-BR')}`;
+  document.getElementById('proj-300').textContent = `R$${(base + 300*6*mesesFuturos).toLocaleString('pt-BR')}`;
+  document.getElementById('proj-400').textContent = `R$${(base + 400*6*mesesFuturos).toLocaleString('pt-BR')}`;
+  document.getElementById('proj-500').textContent = `R$${(base + 500*6*mesesFuturos).toLocaleString('pt-BR')}`;
 
   let rows = '';
   meses.forEach((m, i) => {
@@ -868,8 +1224,8 @@ function renderProjecao(base) {
     const c2 = base + 400*6*(i+1);
     const c3 = base + 500*6*(i+1);
     const pct = v => Math.round(v/39000*100);
-    const bdg = p => p >= 90 ? `<span class="badge badge-green">${p}%</span>` : p >= 60 ? `<span class="badge badge-yellow">${p}%</span>` : `<span class="badge badge-red">${p}%</span>`;
-    const hl = m === 'Nov/26' || m === 'Jan/27' ? 'background:rgba(16,185,129,.04);' : '';
+    const bdg = p => p>=90 ? `<span class="badge badge-green">${p}%</span>` : p>=60 ? `<span class="badge badge-yellow">${p}%</span>` : `<span class="badge badge-red">${p}%</span>`;
+    const hl = (m==='Nov/26'||m==='Jan/27') ? 'background:rgba(16,185,129,.04);' : '';
     rows += `<tr style="${hl}"><td>${m}</td>
       <td>R$${c1.toLocaleString('pt-BR')}</td><td>${bdg(pct(c1))}</td>
       <td>R$${c2.toLocaleString('pt-BR')}</td><td>${bdg(pct(c2))}</td>
@@ -882,33 +1238,80 @@ function renderProjecao(base) {
   </table><p style="font-size:10px;color:var(--text2);margin-top:8px;">* Meta: R$39.000 (6 × R$6.500 mid-range). Rendimentos de renda fixa (~CDI) não incluídos.</p>`;
 }
 
+// ---- HELPERS ----
+function parseMes(s) {
+  const [m,a] = s.split('/');
+  const mi = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'].indexOf(m.toLowerCase());
+  return parseInt(a)*12 + mi;
+}
+
 // ---- MODAIS ----
 function abrirModalAporte() {
-  const sel = document.getElementById('m-pessoa-aporte');
-  sel.value = USUARIO;
+  document.getElementById('modal-aporte-titulo').textContent = 'Registrar Aporte';
+  document.getElementById('m-aporte-id').value = '';
+  document.getElementById('m-pessoa-aporte').value = USUARIO;
+  document.getElementById('m-mes-aporte').value = 'abr/26';
+  document.getElementById('m-valor-aporte').value = '';
+  document.getElementById('m-pessoa-aporte').disabled = false;
+  document.getElementById('m-mes-aporte').disabled = false;
   document.getElementById('modal-aporte').classList.add('open');
 }
+
+function editarAporte(id, pessoa, mes, valor) {
+  document.getElementById('modal-aporte-titulo').textContent = 'Editar Aporte';
+  document.getElementById('m-aporte-id').value = id;
+  document.getElementById('m-pessoa-aporte').value = pessoa;
+  document.getElementById('m-mes-aporte').value = mes;
+  document.getElementById('m-valor-aporte').value = valor;
+  // bloquear pessoa e mês ao editar (não pode mudar esses campos)
+  document.getElementById('m-pessoa-aporte').disabled = true;
+  document.getElementById('m-mes-aporte').disabled = true;
+  document.getElementById('modal-aporte').classList.add('open');
+}
+
+async function excluirAporte(id, pessoa, mes) {
+  if (!confirm(`Excluir aporte de ${pessoa} em ${mes}? Esta ação não pode ser desfeita.`)) return;
+  syncShow('Excluindo...', 'sync');
+  try {
+    await sbFetch(`aportes?id=eq.${id}`, 'DELETE');
+    syncShow('Aporte excluído.', 'ok');
+    await carregarAportes();
+    carregarOverview();
+  } catch(e) { syncShow('Erro ao excluir', 'err'); }
+}
+
 function abrirModalComp() {
-  const sel = document.getElementById('m-pessoa-comp');
-  sel.value = USUARIO;
+  document.getElementById('m-pessoa-comp').value = USUARIO;
   document.getElementById('modal-comp').classList.add('open');
 }
+
 function abrirModalExtrato() {
   document.getElementById('modal-extrato').classList.add('open');
 }
+
 function fecharModal(id) { document.getElementById(id).classList.remove('open'); }
 
 async function salvarAporte() {
+  const id     = document.getElementById('m-aporte-id').value;
   const pessoa = document.getElementById('m-pessoa-aporte').value;
   const mes    = document.getElementById('m-mes-aporte').value;
-  const valor  = parseInt(document.getElementById('m-valor-aporte').value) || 0;
-  if (!valor) { alert('Informe o valor'); return; }
+  const valor  = parseInt(document.getElementById('m-valor-aporte').value);
+  if (isNaN(valor) || valor < 0) { alert('Informe um valor válido.'); return; }
+
   syncShow('Salvando...', 'sync');
   try {
-    await sbFetch('aportes', 'POST', {pessoa, mes, valor});
+    if (id) {
+      // EDITAR — PATCH pelo id
+      await sbFetch(`aportes?id=eq.${id}`, 'PATCH', { valor });
+      syncShow('Aporte atualizado!', 'ok');
+    } else {
+      // NOVO — POST
+      await sbFetch('aportes', 'POST', { pessoa, mes, valor });
+      syncShow('Aporte salvo!', 'ok');
+    }
     fecharModal('modal-aporte');
-    syncShow('Aporte salvo!', 'ok');
     await carregarAportes();
+    carregarOverview();
   } catch(e) {
     syncShow('Erro: já existe registro para esse mês/pessoa?', 'err');
   }
@@ -922,11 +1325,12 @@ async function salvarComp() {
   const agora  = new Date().toLocaleDateString('pt-BR');
   syncShow('Salvando...','sync');
   try {
-    await sbFetch('comprovantes','POST',{pessoa,mes,valor,link,adicionado_em:agora});
+    await sbFetch('comprovantes', 'POST', { pessoa, mes, valor, link, adicionado_em: agora, status: 'Pendente' });
     fecharModal('modal-comp');
-    syncShow('Comprovante adicionado!','ok');
-    carregarComprovantes();
-  } catch(e) { syncShow('Erro ao salvar','err'); }
+    syncShow('Comprovante adicionado!', 'ok');
+    await carregarComprovantes();
+    renderAportes(); // atualiza badges
+  } catch(e) { syncShow('Erro ao salvar', 'err'); }
 }
 
 async function salvarExtrato() {
@@ -937,24 +1341,28 @@ async function salvarExtrato() {
   const observacoes = document.getElementById('m-obs-extrato').value;
   syncShow('Salvando...','sync');
   try {
-    await sbFetch('extratos','POST',{mes,saldo_real,rendimentos,composicao,observacoes});
+    await sbFetch('extratos', 'POST', {
+      mes, saldo_real, rendimentos, composicao, observacoes,
+      status: 'Pendente',
+      confirmado_por: ''
+    });
     fecharModal('modal-extrato');
-    syncShow('Extrato postado!','ok');
+    syncShow('Extrato postado!', 'ok');
     carregarExtratos();
-  } catch(e) { syncShow('Erro ao salvar extrato','err'); }
+  } catch(e) { syncShow('Erro ao salvar extrato', 'err'); }
 }
 
 // ---- NAV ----
 function showPage(name, el) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  if(el) el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (el) el.classList.add('active');
 }
 
 // Fechar modal clicando fora
-document.querySelectorAll('.modal-overlay').forEach(m=>{
-  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
 });
 
 // ---- BOOT ----
